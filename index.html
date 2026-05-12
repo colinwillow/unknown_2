@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UNKNOWN — BEYOND RECOGNITION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@300;500;700;900&family=Archivo:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --black-soft: #131313;
+    --bone: #f0ebe2;
+    --bone-dim: #c4bfb7;
+    --oxblood: #8b1a1a;
+    --gold: #c9a961;
+    --grain-opacity: 0.06;
+    --display: 'Saira Condensed', sans-serif;
+    --body: 'Archivo', sans-serif;
+    --jp: 'Noto Serif JP', serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+background: var(–black);
+color: var(–bone);
+font-family: var(–body);
+overflow-x: hidden;
+-webkit-font-smoothing: antialiased;
+cursor: none;
+}
+
+body { min-height: 100vh; }
+img { display: block; max-width: 100%; }
+
+/* ─── FILM GRAIN OVERLAY ───────────────────── */
+.grain {
+pointer-events: none;
+position: fixed;
+inset: 0;
+z-index: 9999;
+opacity: var(–grain-opacity);
+mix-blend-mode: overlay;
+background-image: url(“data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>”);
+background-size: 200px;
+animation: grainShift 8s steps(8) infinite;
+}
+@keyframes grainShift {
+0%, 100% { transform: translate(0, 0); }
+25% { transform: translate(-3%, 4%); }
+50% { transform: translate(2%, -2%); }
+75% { transform: translate(-2%, 3%); }
+}
+
+/* ─── CUSTOM CURSOR ────────────────────────── */
+.cursor {
+position: fixed;
+width: 24px; height: 24px;
+border: 1px solid var(–bone);
+border-radius: 50%;
+pointer-events: none;
+z-index: 10000;
+mix-blend-mode: difference;
+transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+transform: translate(-50%, -50%);
+}
+.cursor::after {
+content: ‘?’;
+position: absolute;
+inset: 0;
+display: flex; align-items: center; justify-content: center;
+font-family: var(–display);
+font-weight: 700;
+font-size: 12px;
+color: var(–bone);
+opacity: 0;
+transition: opacity 0.2s ease;
+}
+.cursor.hover {
+width: 56px; height: 56px;
+border-color: var(–bone);
+}
+.cursor.hover::after { opacity: 1; }
+.cursor-dot {
+position: fixed;
+width: 4px; height: 4px;
+background: var(–bone);
+border-radius: 50%;
+pointer-events: none;
+z-index: 10000;
+mix-blend-mode: difference;
+transform: translate(-50%, -50%);
+}
+
+/* ─── THRESHOLD ────────────────────────────── */
+.threshold {
+position: fixed;
+inset: 0;
+background: var(–black);
+z-index: 1000;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+transition: opacity 0.8s ease, visibility 0.8s ease;
+overflow: hidden;
+}
+.threshold.gone {
+opacity: 0;
+visibility: hidden;
+}
+
+.threshold-bg-art {
+position: absolute;
+inset: 0;
+background-image: url(“https://colinwillow.github.io/unknown_02/images_webp/design_05.webp”);
+background-size: cover;
+background-position: center;
+opacity: 0;
+filter: grayscale(1) contrast(1.2);
+mix-blend-mode: screen;
+transition: opacity 2s ease;
+pointer-events: none;
+}
+.threshold-bg-art.in { opacity: 0.08; }
+
+.threshold-corners {
+position: absolute;
+inset: 32px;
+border: 1px solid rgba(240, 235, 226, 0.08);
+pointer-events: none;
+opacity: 0;
+animation: fadeIn 0.6s ease 0.2s forwards;
+}
+.threshold-corners::before,
+.threshold-corners::after {
+content: ‘’;
+position: absolute;
+width: 24px; height: 24px;
+}
+.threshold-corners::before {
+top: -1px; left: -1px;
+border-top: 1px solid var(–bone);
+border-left: 1px solid var(–bone);
+}
+.threshold-corners::after {
+bottom: -1px; right: -1px;
+border-bottom: 1px solid var(–bone);
+border-right: 1px solid var(–bone);
+}
+
+.threshold-meta {
+position: absolute;
+font-family: var(–mono);
+font-size: 10px;
+font-weight: 300;
+letter-spacing: 0.2em;
+color: var(–bone-dim);
+opacity: 0;
+animation: fadeIn 0.6s ease 0.4s forwards;
+}
+.threshold-meta.tl { top: 48px; left: 48px; }
+.threshold-meta.tr { top: 48px; right: 48px; }
+.threshold-meta.bl { bottom: 48px; left: 48px; }
+.threshold-meta.br { bottom: 48px; right: 48px; }
+
+.threshold-stack {
+text-align: center;
+position: relative;
+z-index: 2;
+}
+
+.threshold-kanji {
+font-family: var(–jp);
+font-weight: 900;
+font-size: 96px;
+color: var(–bone);
+line-height: 1;
+opacity: 0;
+animation: kanjiIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+margin-bottom: 24px;
+}
+
+.threshold-wordmark {
+font-family: var(–display);
+font-weight: 900;
+font-size: clamp(80px, 14vw, 200px);
+letter-spacing: -0.02em;
+line-height: 0.85;
+color: var(–bone);
+opacity: 0;
+transform: scale(1.15);
+animation: wordmarkIn 1s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+margin-bottom: 24px;
+}
+
+.threshold-tagline {
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.4em;
+color: var(–bone-dim);
+text-transform: uppercase;
+overflow: hidden;
+height: 16px;
+opacity: 0;
+animation: fadeIn 0.4s ease 2.2s forwards;
+}
+.threshold-tagline span {
+display: inline-block;
+transform: translateY(100%);
+animation: lineIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.3s forwards;
+}
+
+.threshold-enter {
+position: absolute;
+bottom: 80px;
+left: 50%;
+transform: translateX(-50%);
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.5em;
+color: var(–bone);
+text-transform: uppercase;
+padding: 16px 32px;
+border: 1px solid rgba(240, 235, 226, 0.2);
+background: transparent;
+cursor: none;
+opacity: 0;
+animation: fadeIn 0.6s ease 3s forwards;
+transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease, letter-spacing 0.3s ease;
+z-index: 2;
+}
+.threshold-enter:hover {
+background: var(–bone);
+color: var(–black);
+border-color: var(–bone);
+letter-spacing: 0.7em;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes kanjiIn {
+0% { opacity: 0; filter: blur(20px); transform: scale(1.3); }
+60% { opacity: 1; filter: blur(0); transform: scale(1); }
+65% { opacity: 0.3; }
+70% { opacity: 1; }
+72% { opacity: 0.6; }
+74% { opacity: 1; }
+100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+@keyframes wordmarkIn { to { opacity: 1; transform: scale(1); } }
+@keyframes lineIn { to { transform: translateY(0); } }
+
+/* ─── SITE NAV ─────────────────────────────── */
+.nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 24px 40px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+mix-blend-mode: difference;
+transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
+opacity: 0;
+transform: translateY(-20px);
+}
+.site-on .nav { opacity: 1; transform: translateY(0); }
+.nav-logo {
+font-family: var(–display);
+font-weight: 900;
+font-size: 22px;
+letter-spacing: -0.01em;
+color: var(–bone);
+text-decoration: none;
+}
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-link {
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.25em;
+color: var(–bone);
+text-decoration: none;
+text-transform: uppercase;
+position: relative;
+padding: 4px 0;
+transition: color 0.2s ease;
+}
+.nav-link::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0;
+width: 0; height: 1px;
+background: var(–bone);
+transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after { width: 100%; }
+.nav-cart {
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.25em;
+padding: 8px 14px;
+border: 1px solid rgba(240, 235, 226, 0.3);
+}
+
+/* ─── SITE ───────────────────────────────── */
+.site { opacity: 0; transition: opacity 0.8s ease 0.2s; }
+.site-on .site { opacity: 1; }
+
+/* ─── HERO ───────────────────────────────── */
+.hero {
+height: 100vh;
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+background: var(–black);
+}
+.hero-img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center 35%;
+z-index: 0;
+}
+.hero-overlay {
+position: absolute;
+inset: 0;
+z-index: 1;
+background:
+linear-gradient(to bottom, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.3) 30%, rgba(10, 10, 10, 0.5) 70%, rgba(10, 10, 10, 0.9) 100%),
+radial-gradient(ellipse at 50% 40%, rgba(139, 26, 26, 0.18) 0%, transparent 60%);
+}
+.hero-grid-lines {
+position: absolute;
+inset: 0;
+opacity: 0.03;
+background-image:
+linear-gradient(to right, var(–bone) 1px, transparent 1px),
+linear-gradient(to bottom, var(–bone) 1px, transparent 1px);
+background-size: 100px 100px;
+pointer-events: none;
+z-index: 2;
+}
+.hero-content { text-align: center; position: relative; z-index: 3; }
+.hero-kanji {
+font-family: var(–jp);
+font-weight: 900;
+font-size: clamp(40px, 6vw, 80px);
+color: var(–bone);
+opacity: 0.18;
+position: absolute;
+top: -120px;
+left: 50%;
+transform: translateX(-50%);
+letter-spacing: 0.4em;
+pointer-events: none;
+}
+.hero-wordmark {
+font-family: var(–display);
+font-weight: 900;
+font-size: clamp(80px, 18vw, 260px);
+letter-spacing: -0.025em;
+line-height: 0.85;
+color: var(–bone);
+margin: 0;
+text-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+}
+.hero-tagline {
+font-family: var(–mono);
+font-size: 12px;
+letter-spacing: 0.5em;
+color: var(–bone-dim);
+text-transform: uppercase;
+margin-top: 24px;
+}
+.hero-scroll {
+position: absolute;
+bottom: 40px;
+left: 50%;
+transform: translateX(-50%);
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.3em;
+color: var(–bone-dim);
+text-transform: uppercase;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+z-index: 3;
+}
+.hero-scroll::after {
+content: ‘’;
+width: 1px;
+height: 40px;
+background: linear-gradient(to bottom, var(–bone-dim), transparent);
+animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+0%, 100% { transform: scaleY(1); opacity: 0.6; }
+50% { transform: scaleY(1.3); opacity: 1; }
+}
+.hero-corners { position: absolute; inset: 32px; pointer-events: none; z-index: 3; }
+.hero-corners > div { position: absolute; width: 16px; height: 16px; border-color: rgba(240, 235, 226, 0.25); }
+.hero-corners > div:nth-child(1) { top: 0; left: 0; border-top: 1px solid currentColor; border-left: 1px solid currentColor; }
+.hero-corners > div:nth-child(2) { top: 0; right: 0; border-top: 1px solid currentColor; border-right: 1px solid currentColor; }
+.hero-corners > div:nth-child(3) { bottom: 0; left: 0; border-bottom: 1px solid currentColor; border-left: 1px solid currentColor; }
+.hero-corners > div:nth-child(4) { bottom: 0; right: 0; border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; }
+.hero-meta-tl, .hero-meta-tr {
+position: absolute;
+top: 80px;
+font-family: var(–mono);
+font-size: 9px;
+letter-spacing: 0.3em;
+color: var(–bone);
+z-index: 3;
+line-height: 1.6;
+}
+.hero-meta-tl { left: 40px; }
+.hero-meta-tr { right: 40px; text-align: right; }
+
+/* ─── SECTION SCAFFOLDING ─────────────────── */
+.section { padding: 120px 40px; position: relative; }
+.section-header {
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+padding-bottom: 40px;
+margin-bottom: 60px;
+border-bottom: 1px solid rgba(240, 235, 226, 0.1);
+}
+.section-eyebrow {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.4em;
+color: var(–bone-dim);
+text-transform: uppercase;
+}
+.section-title {
+font-family: var(–display);
+font-weight: 700;
+font-size: clamp(40px, 7vw, 96px);
+letter-spacing: -0.02em;
+line-height: 0.9;
+color: var(–bone);
+margin: 16px 0 0 0;
+}
+.section-title .jp {
+font-family: var(–jp);
+font-weight: 700;
+font-size: 0.5em;
+opacity: 0.5;
+margin-left: 24px;
+vertical-align: super;
+}
+.section-link {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.3em;
+color: var(–bone);
+text-decoration: none;
+text-transform: uppercase;
+padding-bottom: 4px;
+border-bottom: 1px solid var(–bone);
+white-space: nowrap;
+}
+
+/* ─── DESIGNS / GRAPHIC ART ───────────────── */
+.designs-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 24px;
+}
+.design-tile {
+aspect-ratio: 4 / 5;
+position: relative;
+overflow: hidden;
+background: var(–black-soft);
+cursor: none;
+text-decoration: none;
+}
+.design-tile img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+filter: contrast(1.05);
+}
+.design-tile:hover img {
+transform: scale(1.04);
+filter: contrast(1.1);
+}
+.design-tile-info {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+padding: 32px;
+background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 20%, transparent);
+z-index: 2;
+}
+.design-tile-tag {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.35em;
+color: var(–bone-dim);
+text-transform: uppercase;
+margin-bottom: 12px;
+}
+.design-tile-title {
+font-family: var(–display);
+font-weight: 700;
+font-size: clamp(28px, 3vw, 44px);
+letter-spacing: -0.01em;
+line-height: 0.95;
+color: var(–bone);
+}
+
+/* ─── LATEST TRANSMISSION ────────────────── */
+.transmission {
+display: grid;
+grid-template-columns: 1.4fr 1fr;
+gap: 40px;
+align-items: flex-start;
+}
+.transmission-main {
+aspect-ratio: 4 / 5;
+background: var(–black-soft);
+position: relative;
+overflow: hidden;
+text-decoration: none;
+display: block;
+}
+.transmission-main img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+object-position: center 30%;
+transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.transmission-main:hover img { transform: scale(1.04); }
+.placeholder-tag {
+position: absolute;
+top: 24px;
+left: 24px;
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.3em;
+color: var(–bone);
+text-transform: uppercase;
+background: rgba(10, 10, 10, 0.6);
+padding: 8px 12px;
+border: 1px solid rgba(240, 235, 226, 0.2);
+z-index: 2;
+backdrop-filter: blur(8px);
+}
+.placeholder-caption {
+position: absolute;
+bottom: 24px;
+left: 24px;
+right: 24px;
+font-family: var(–display);
+font-weight: 700;
+font-size: 48px;
+letter-spacing: -0.01em;
+line-height: 0.9;
+color: var(–bone);
+z-index: 2;
+text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+}
+.transmission-side {
+display: flex;
+flex-direction: column;
+gap: 24px;
+}
+.product-card {
+display: grid;
+grid-template-columns: 100px 1fr;
+gap: 20px;
+padding: 16px 0;
+border-bottom: 1px solid rgba(240, 235, 226, 0.08);
+cursor: none;
+transition: padding-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+text-decoration: none;
+}
+.product-card:hover { padding-left: 12px; }
+.product-card .thumb {
+aspect-ratio: 4 / 5;
+background: var(–black-soft);
+position: relative;
+overflow: hidden;
+}
+.product-card .thumb img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: transform 0.6s ease;
+}
+.product-card:hover .thumb img { transform: scale(1.08); }
+.product-card .info {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+padding: 4px 0;
+}
+.product-card .name {
+font-family: var(–display);
+font-weight: 700;
+font-size: 22px;
+letter-spacing: -0.01em;
+color: var(–bone);
+line-height: 1.1;
+}
+.product-card .meta {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.25em;
+color: var(–bone-dim);
+text-transform: uppercase;
+}
+.product-card .price {
+font-family: var(–mono);
+font-size: 13px;
+letter-spacing: 0.1em;
+color: var(–bone);
+}
+
+/* ─── TRANSMISSIONS STRIP ───────────────── */
+.strip {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 16px;
+}
+.chapter {
+aspect-ratio: 3 / 4;
+background: var(–black-soft);
+position: relative;
+overflow: hidden;
+cursor: none;
+transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+text-decoration: none;
+display: block;
+}
+.chapter:hover { transform: translateY(-8px); }
+.chapter img {
+position: absolute;
+inset: 0;
+width: 100%; height: 100%;
+object-fit: cover;
+object-position: center 30%;
+transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+filter: brightness(0.7) contrast(1.05);
+}
+.chapter:hover img {
+transform: scale(1.06);
+filter: brightness(0.85) contrast(1.1);
+}
+.chapter::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.3) 40%, rgba(10, 10, 10, 0.5) 100%);
+z-index: 1;
+transition: opacity 0.5s ease;
+}
+.chapter:hover::after { opacity: 0.7; }
+.chapter-tag {
+position: absolute;
+top: 20px;
+left: 20px;
+font-family: var(–mono);
+font-size: 9px;
+letter-spacing: 0.4em;
+color: var(–bone);
+text-transform: uppercase;
+z-index: 2;
+}
+.chapter-kanji {
+position: absolute;
+top: 28px;
+right: 20px;
+font-family: var(–jp);
+font-weight: 900;
+font-size: 36px;
+color: rgba(240, 235, 226, 0.6);
+pointer-events: none;
+z-index: 2;
+transition: color 0.5s ease, transform 0.5s ease;
+}
+.chapter:hover .chapter-kanji {
+color: rgba(240, 235, 226, 0.95);
+transform: scale(1.08);
+}
+.chapter-info {
+position: absolute;
+bottom: 20px;
+left: 20px;
+right: 20px;
+z-index: 2;
+}
+.chapter-title {
+font-family: var(–display);
+font-weight: 700;
+font-size: 28px;
+letter-spacing: -0.01em;
+color: var(–bone);
+line-height: 1;
+}
+.chapter-meta {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.25em;
+color: var(–bone-dim);
+text-transform: uppercase;
+margin-top: 8px;
+}
+
+/* ─── EYEWEAR VERTICAL ────────────────── */
+.eyewear {
+background: var(–black);
+padding: 160px 40px;
+border-top: 1px solid rgba(240, 235, 226, 0.08);
+border-bottom: 1px solid rgba(240, 235, 226, 0.08);
+}
+.eyewear-inner {
+max-width: 1400px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 80px;
+align-items: center;
+}
+.eyewear-visual {
+aspect-ratio: 1 / 1;
+background: var(–black-soft);
+position: relative;
+overflow: hidden;
+}
+.eyewear-visual img {
+position: absolute;
+inset: 0;
+width: 100%; height: 100%;
+object-fit: cover;
+transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.eyewear-visual:hover img { transform: scale(1.05); }
+.eyewear-visual::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at center, transparent 30%, rgba(10, 10, 10, 0.5) 100%);
+pointer-events: none;
+}
+.eyewear-text { color: var(–bone); }
+.eyewear-eyebrow {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.4em;
+color: var(–gold);
+text-transform: uppercase;
+}
+.eyewear-title {
+font-family: var(–display);
+font-weight: 900;
+font-size: clamp(56px, 7vw, 112px);
+letter-spacing: -0.02em;
+line-height: 0.9;
+margin: 24px 0 32px;
+}
+.eyewear-body {
+font-family: var(–body);
+font-weight: 400;
+font-size: 16px;
+line-height: 1.65;
+color: var(–bone-dim);
+max-width: 420px;
+margin-bottom: 40px;
+}
+.eyewear-cta {
+display: inline-block;
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.4em;
+color: var(–bone);
+text-decoration: none;
+text-transform: uppercase;
+padding: 16px 28px;
+border: 1px solid var(–gold);
+transition: background 0.3s ease, color 0.3s ease, letter-spacing 0.3s ease;
+}
+.eyewear-cta:hover {
+background: var(–gold);
+color: var(–black);
+letter-spacing: 0.5em;
+}
+
+/* ─── SYMBOL SYSTEM ───────────────── */
+.symbols { padding: 120px 40px; }
+.symbol-grid {
+display: grid;
+grid-template-columns: repeat(6, 1fr);
+gap: 1px;
+background: rgba(240, 235, 226, 0.08);
+border: 1px solid rgba(240, 235, 226, 0.08);
+}
+.symbol {
+aspect-ratio: 1 / 1;
+background: var(–black);
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+cursor: none;
+transition: background 0.3s ease;
+}
+.symbol:hover { background: var(–black-soft); }
+.symbol svg {
+width: 40%;
+height: 40%;
+color: var(–bone);
+opacity: 0.7;
+transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.symbol:hover svg {
+opacity: 1;
+transform: scale(1.15) rotate(8deg);
+}
+.symbol-label {
+position: absolute;
+bottom: 12px;
+left: 12px;
+font-family: var(–mono);
+font-size: 9px;
+letter-spacing: 0.25em;
+color: var(–bone-dim);
+text-transform: uppercase;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+.symbol:hover .symbol-label { opacity: 1; }
+
+/* ─── FOOTER ─────────────────────── */
+.footer {
+background: var(–black);
+border-top: 1px solid rgba(240, 235, 226, 0.08);
+padding: 80px 40px 40px;
+}
+.footer-inner { max-width: 1400px; margin: 0 auto; }
+.footer-wordmark {
+font-family: var(–display);
+font-weight: 900;
+font-size: clamp(120px, 22vw, 360px);
+letter-spacing: -0.03em;
+line-height: 0.8;
+color: var(–bone);
+margin-bottom: 60px;
+user-select: none;
+}
+.footer-cols {
+display: grid;
+grid-template-columns: 2fr 1fr 1fr 1fr;
+gap: 60px;
+padding-bottom: 60px;
+border-bottom: 1px solid rgba(240, 235, 226, 0.1);
+}
+.footer-col h4 {
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.4em;
+color: var(–bone-dim);
+text-transform: uppercase;
+margin-bottom: 20px;
+font-weight: 400;
+}
+.footer-col a {
+display: block;
+font-family: var(–body);
+font-size: 14px;
+color: var(–bone);
+text-decoration: none;
+margin-bottom: 10px;
+transition: opacity 0.2s ease;
+}
+.footer-col a:hover { opacity: 0.6; }
+.footer-col p {
+font-family: var(–body);
+font-size: 14px;
+line-height: 1.6;
+color: var(–bone-dim);
+max-width: 320px;
+}
+
+/* ─── TICKER ─────────────────────── */
+.ticker {
+overflow: hidden;
+border-top: 1px solid rgba(240, 235, 226, 0.1);
+border-bottom: 1px solid rgba(240, 235, 226, 0.1);
+background: var(–black);
+padding: 14px 0;
+margin-top: 40px;
+}
+.ticker-track {
+display: inline-flex;
+white-space: nowrap;
+animation: tickerScroll 60s linear infinite;
+}
+.ticker-item {
+font-family: var(–mono);
+font-size: 11px;
+letter-spacing: 0.3em;
+color: var(–bone-dim);
+text-transform: uppercase;
+padding: 0 32px;
+display: inline-flex;
+align-items: center;
+gap: 12px;
+}
+.ticker-item::after {
+content: ‘◆’;
+color: var(–oxblood);
+margin-left: 32px;
+}
+@keyframes tickerScroll {
+from { transform: translateX(0); }
+to { transform: translateX(-50%); }
+}
+.footer-bottom {
+margin-top: 24px;
+display: flex;
+justify-content: space-between;
+font-family: var(–mono);
+font-size: 10px;
+letter-spacing: 0.3em;
+color: var(–bone-dim);
+text-transform: uppercase;
+}
+
+/* ─── RESPONSIVE ────────────────── */
+@media (max-width: 900px) {
+.nav { padding: 16px 20px; }
+.nav-links { gap: 16px; }
+.nav-link { font-size: 10px; }
+.nav-link:not(.nav-cart) { display: none; }
+.section { padding: 80px 20px; }
+.designs-grid { grid-template-columns: 1fr; }
+.transmission { grid-template-columns: 1fr; }
+.strip { grid-template-columns: repeat(2, 1fr); }
+.eyewear { padding: 80px 20px; }
+.eyewear-inner { grid-template-columns: 1fr; gap: 40px; }
+.symbol-grid { grid-template-columns: repeat(3, 1fr); }
+.footer-cols { grid-template-columns: 1fr 1fr; gap: 30px; }
+.threshold-meta { font-size: 9px; }
+.threshold-meta.tl { top: 24px; left: 24px; }
+.threshold-meta.tr { top: 24px; right: 24px; }
+.threshold-meta.bl { bottom: 24px; left: 24px; }
+.threshold-meta.br { bottom: 24px; right: 24px; }
+.placeholder-caption { font-size: 28px; }
+.hero-meta-tl, .hero-meta-tr { top: 60px; font-size: 8px; }
+html, body { cursor: auto; }
+.cursor, .cursor-dot { display: none; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- ─── GRAIN OVERLAY ─── -->
+
+<div class="grain"></div>
+
+<!-- ─── CUSTOM CURSOR ─── -->
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ─── THRESHOLD ─── -->
+
+<div class="threshold" id="threshold">
+  <div class="threshold-bg-art" id="thresholdBgArt"></div>
+  <div class="threshold-corners"></div>
+  <div class="threshold-meta tl">TRANSMISSION 23 // X-23 / 999</div>
+  <div class="threshold-meta tr">SIGNAL STABLE</div>
+  <div class="threshold-meta bl">未知の領域</div>
+  <div class="threshold-meta br" id="thresholdClock">— : — UTC</div>
+
+  <div class="threshold-stack">
+    <div class="threshold-kanji">未知</div>
+    <h1 class="threshold-wordmark">UNKNOWN</h1>
+    <div class="threshold-tagline"><span>BEYOND&nbsp;&nbsp;RECOGNITION</span></div>
+  </div>
+
+<button class="threshold-enter" id="thresholdEnter">ENTER</button>
+
+</div>
+
+<!-- ─── NAV ─── -->
+
+<nav class="nav">
+  <a href="#" class="nav-logo">UNKNOWN</a>
+  <div class="nav-links">
+    <a href="#" class="nav-link">Shop</a>
+    <a href="#" class="nav-link">Transmissions</a>
+    <a href="#" class="nav-link">Eyewear</a>
+    <a href="#" class="nav-link">Lore</a>
+    <a href="#" class="nav-link nav-cart">Cart [0]</a>
+  </div>
+</nav>
+
+<!-- ─── SITE ─── -->
+
+<main class="site">
+
+  <!-- HERO -->
+
+  <section class="hero">
+    <img class="hero-img" src="https://colinwillow.github.io/unknown_02/images_webp/hero_01.webp" alt="" loading="eager" />
+    <div class="hero-overlay"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-corners">
+      <div></div><div></div><div></div><div></div>
+    </div>
+    <div class="hero-meta-tl">TRANSMISSION 23<br>SIGNAL // STABLE</div>
+    <div class="hero-meta-tr">X-23 / 999<br>未知の領域</div>
+
+```
+<div class="hero-content">
+  <div class="hero-kanji">未知</div>
+  <h1 class="hero-wordmark">UNKNOWN</h1>
+  <div class="hero-tagline">BEYOND&nbsp;&nbsp;RECOGNITION</div>
+</div>
+
+<div class="hero-scroll">SCROLL</div>
+```
+
+  </section>
+
+  <!-- DESIGNS / GRAPHIC ART MOMENT -->
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Iconography // The Marks</div>
+        <h2 class="section-title">The Visual Language<span class="jp">図像</span></h2>
+      </div>
+      <a href="#" class="section-link">Read the Lore →</a>
+    </div>
+
+```
+<div class="designs-grid">
+  <a href="#" class="design-tile">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/design_05.webp" alt="" loading="lazy" />
+    <div class="design-tile-info">
+      <div class="design-tile-tag">MARK 023 // 未知</div>
+      <div class="design-tile-title">Visitor From<br>Beyond</div>
+    </div>
+  </a>
+  <a href="#" class="design-tile">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/design_06.webp" alt="" loading="lazy" />
+    <div class="design-tile-info">
+      <div class="design-tile-tag">MARK 022 // 信念</div>
+      <div class="design-tile-title">Trust<br>Nothing</div>
+    </div>
+  </a>
+</div>
+```
+
+  </section>
+
+  <!-- LATEST TRANSMISSION -->
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Currently Transmitting</div>
+        <h2 class="section-title">Transmission 23<span class="jp">未知</span></h2>
+      </div>
+      <a href="#" class="section-link">View Drop →</a>
+    </div>
+
+```
+<div class="transmission">
+  <a href="#" class="transmission-main">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/cinematic_01.webp" alt="" loading="lazy" />
+    <div class="placeholder-tag">FEATURED // DESERT TRANSMISSION</div>
+    <div class="placeholder-caption">Trust Nothing.<br>Question Everything.</div>
+  </a>
+
+  <div class="transmission-side">
+    <a href="#" class="product-card">
+      <div class="thumb">
+        <img src="https://colinwillow.github.io/unknown_02/images_webp/hero_15.webp" alt="" loading="lazy" />
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UKN-023 / Hoodie</div>
+          <div class="name">Unknown Future Hood</div>
+        </div>
+        <div class="price">$148.00</div>
+      </div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="thumb">
+        <img src="https://colinwillow.github.io/unknown_02/images_webp/sweatshirt_05.webp" alt="" loading="lazy" />
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UKN-024 / Hoodie</div>
+          <div class="name">Trust Nothing Hood</div>
+        </div>
+        <div class="price">$148.00</div>
+      </div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="thumb">
+        <img src="https://colinwillow.github.io/unknown_02/images_webp/sweatshitr_05.webp" alt="" loading="lazy" />
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UKN-025 / Hoodie</div>
+          <div class="name">Maximalist Crop</div>
+        </div>
+        <div class="price">$138.00</div>
+      </div>
+    </a>
+    <a href="#" class="product-card">
+      <div class="thumb">
+        <img src="https://colinwillow.github.io/unknown_02/images_webp/glasses_01.webp" alt="" loading="lazy" />
+      </div>
+      <div class="info">
+        <div>
+          <div class="meta">UKN-EW-04 / Eyewear</div>
+          <div class="name">Tortoise Shield Visor</div>
+        </div>
+        <div class="price">$245.00</div>
+      </div>
+    </a>
+  </div>
+</div>
+```
+
+  </section>
+
+  <!-- TRANSMISSIONS STRIP -->
+
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Archive</div>
+        <h2 class="section-title">Transmissions<span class="jp">記録</span></h2>
+      </div>
+      <a href="#" class="section-link">All Chapters →</a>
+    </div>
+
+```
+<div class="strip">
+  <a href="#" class="chapter">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/hero_11.webp" alt="" loading="lazy" />
+    <div class="chapter-tag">TM-23 / SIGNAL</div>
+    <div class="chapter-kanji">未知</div>
+    <div class="chapter-info">
+      <div class="chapter-title">Desert<br>Transmission</div>
+      <div class="chapter-meta">CURRENT // FW26</div>
+    </div>
+  </a>
+  <a href="#" class="chapter">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/closer_01.webp" alt="" loading="lazy" />
+    <div class="chapter-tag">TM-22 / TRUST NOTHING</div>
+    <div class="chapter-kanji">疑念</div>
+    <div class="chapter-info">
+      <div class="chapter-title">Trust<br>Nothing</div>
+      <div class="chapter-meta">ARCHIVE // FW25</div>
+    </div>
+  </a>
+  <a href="#" class="chapter">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/glasses_02.webp" alt="" loading="lazy" />
+    <div class="chapter-tag">TM-21 / EYEWEAR</div>
+    <div class="chapter-kanji">視界</div>
+    <div class="chapter-info">
+      <div class="chapter-title">Beyond<br>Recognition</div>
+      <div class="chapter-meta">ARCHIVE // SS25</div>
+    </div>
+  </a>
+  <a href="#" class="chapter">
+    <img src="https://colinwillow.github.io/unknown_02/images_webp/hero_07.webp" alt="" loading="lazy" />
+    <div class="chapter-tag">TM-20 / WAVE</div>
+    <div class="chapter-kanji">波動</div>
+    <div class="chapter-info">
+      <div class="chapter-title">Wave<br>Theory</div>
+      <div class="chapter-meta">ARCHIVE // SS25</div>
+    </div>
+  </a>
+</div>
+```
+
+  </section>
+
+  <!-- EYEWEAR VERTICAL -->
+
+  <section class="eyewear">
+    <div class="eyewear-inner">
+      <div class="eyewear-visual">
+        <img src="https://colinwillow.github.io/unknown_02/images_webp/glasses_03.webp" alt="" loading="lazy" />
+      </div>
+      <div class="eyewear-text">
+        <div class="eyewear-eyebrow">Unknown Eyewear // Issued</div>
+        <h2 class="eyewear-title">Hidden<br>in Plain<br>Sight.</h2>
+        <p class="eyewear-body">
+          Acetate frames. 24k-plated hardware. Hand-finished octagonal seal. The face is hidden — the wearer is everywhere. Issued in numbered transmissions, never restocked.
+        </p>
+        <a href="#" class="eyewear-cta">Enter Eyewear →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYMBOL SYSTEM -->
+
+  <section class="section symbols">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Lexicon</div>
+        <h2 class="section-title">The Symbols<span class="jp">記号</span></h2>
+      </div>
+      <a href="#" class="section-link">Read the Lore →</a>
+    </div>
+
+```
+<div class="symbol-grid">
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <ellipse cx="50" cy="40" rx="30" ry="10"/>
+      <path d="M30 40 Q50 70 70 40"/>
+      <circle cx="50" cy="40" r="2" fill="currentColor"/>
+    </svg>
+    <div class="symbol-label">UFO / Vessel</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <ellipse cx="50" cy="50" rx="20" ry="28"/>
+      <ellipse cx="42" cy="48" rx="4" ry="7" fill="currentColor"/>
+      <ellipse cx="58" cy="48" rx="4" ry="7" fill="currentColor"/>
+    </svg>
+    <div class="symbol-label">Visitor</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 80 L50 20 L80 80 Z"/>
+      <circle cx="50" cy="55" r="5"/>
+      <path d="M48 55 L52 55 M50 53 L50 57"/>
+    </svg>
+    <div class="symbol-label">Pyramid / Sight</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <ellipse cx="50" cy="50" rx="32" ry="18"/>
+      <circle cx="50" cy="50" r="10"/>
+      <circle cx="50" cy="50" r="3" fill="currentColor"/>
+    </svg>
+    <div class="symbol-label">All-Seeing</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <text x="50" y="64" text-anchor="middle" font-family="serif" font-weight="900" font-size="50" fill="currentColor">?</text>
+    </svg>
+    <div class="symbol-label">Question</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M50 20 L50 80 M30 35 L70 35"/>
+      <path d="M40 50 L40 70 L60 70 L60 50 Z"/>
+    </svg>
+    <div class="symbol-label">Dagger</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="50" cy="50" r="32"/>
+      <circle cx="50" cy="50" r="20" stroke-dasharray="3 3"/>
+      <path d="M50 18 L50 82 M18 50 L82 50"/>
+    </svg>
+    <div class="symbol-label">Coordinate</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M50 20 Q70 35 70 50 Q70 75 50 80 Q30 75 30 50 Q30 35 50 20 Z"/>
+      <path d="M50 30 L50 70" stroke-dasharray="2 3"/>
+    </svg>
+    <div class="symbol-label">Vessel</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M50 18 L55 42 L80 42 L60 58 L68 82 L50 67 L32 82 L40 58 L20 42 L45 42 Z"/>
+    </svg>
+    <div class="symbol-label">North Star</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 70 Q35 30 50 70 Q65 30 80 70"/>
+      <path d="M20 75 Q35 35 50 75 Q65 35 80 75" opacity="0.5"/>
+    </svg>
+    <div class="symbol-label">Flame</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M30 30 Q70 30 70 50 Q70 70 50 70 Q30 70 30 50 Q30 35 50 35"/>
+      <circle cx="65" cy="32" r="3" fill="currentColor"/>
+    </svg>
+    <div class="symbol-label">Serpent</div>
+  </div>
+  <div class="symbol">
+    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="50" cy="50" r="28"/>
+      <path d="M50 22 L50 78 M22 50 L78 50 M30 30 L70 70 M70 30 L30 70"/>
+    </svg>
+    <div class="symbol-label">Origin</div>
+  </div>
+</div>
+```
+
+  </section>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-wordmark">UNKNOWN</div>
+
+```
+<div class="footer-cols">
+  <div class="footer-col">
+    <h4>The Brand</h4>
+    <p>
+      UNKNOWN is a signal. A name. A refusal. We make clothing for the people who'd rather be everywhere than recognized anywhere. Issued in transmissions. Never explained.
+    </p>
+  </div>
+  <div class="footer-col">
+    <h4>Shop</h4>
+    <a href="#">Hoodies</a>
+    <a href="#">Tees</a>
+    <a href="#">Bottoms</a>
+    <a href="#">Eyewear</a>
+    <a href="#">Accessories</a>
+  </div>
+  <div class="footer-col">
+    <h4>Information</h4>
+    <a href="#">Shipping</a>
+    <a href="#">Returns</a>
+    <a href="#">Sizing</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-col">
+    <h4>Signal</h4>
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">Newsletter</a>
+    <a href="#">Transmissions Archive</a>
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item">Transmission 23 Now Live</div>
+    <div class="ticker-item">Free Shipping Over $200</div>
+    <div class="ticker-item">未知の領域 — Beyond Recognition</div>
+    <div class="ticker-item">Eyewear Drop Sold Out in 4hr</div>
+    <div class="ticker-item">Signal Stable / X-23 / 999</div>
+    <div class="ticker-item">Trust Nothing</div>
+    <div class="ticker-item">Transmission 23 Now Live</div>
+    <div class="ticker-item">Free Shipping Over $200</div>
+    <div class="ticker-item">未知の領域 — Beyond Recognition</div>
+    <div class="ticker-item">Eyewear Drop Sold Out in 4hr</div>
+    <div class="ticker-item">Signal Stable / X-23 / 999</div>
+    <div class="ticker-item">Trust Nothing</div>
+  </div>
+</div>
+
+<div class="footer-bottom">
+  <div>© UNKNOWN 2026 / All Rights Issued</div>
+  <div id="footerClock">— : — UTC</div>
+</div>
+```
+
+  </div>
+</footer>
+
+<script>
+  // ─── CUSTOM CURSOR ──────────────────────────
+  const cursor = document.getElementById('cursor');
+  const cursorDot = document.getElementById('cursorDot');
+  let mouseX = 0, mouseY = 0;
+  let cursorX = 0, cursorY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursorDot.style.left = mouseX + 'px';
+    cursorDot.style.top = mouseY + 'px';
+  });
+
+  function animateCursor() {
+    cursorX += (mouseX - cursorX) * 0.18;
+    cursorY += (mouseY - cursorY) * 0.18;
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // hover state on interactive elements
+  document.querySelectorAll('a, button, .product-card, .chapter, .symbol, .design-tile, .transmission-main').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+
+  // ─── THRESHOLD ENTRY ──────────────────────
+  const threshold = document.getElementById('threshold');
+  const enterBtn = document.getElementById('thresholdEnter');
+  const thresholdBgArt = document.getElementById('thresholdBgArt');
+
+  // fade in the background art mid-threshold
+  setTimeout(() => {
+    thresholdBgArt.classList.add('in');
+  }, 1800);
+
+  enterBtn.addEventListener('click', () => {
+    threshold.classList.add('gone');
+    document.body.classList.add('site-on');
+    setTimeout(() => {
+      threshold.style.display = 'none';
+    }, 800);
+  });
+
+  // ─── CLOCKS ──────────────────────
+  function updateClocks() {
+    const now = new Date();
+    const h = String(now.getUTCHours()).padStart(2, '0');
+    const m = String(now.getUTCMinutes()).padStart(2, '0');
+    const s = String(now.getUTCSeconds()).padStart(2, '0');
+    const text = `${h}:${m}:${s} UTC`;
+    document.getElementById('thresholdClock').textContent = text;
+    const fc = document.getElementById('footerClock');
+    if (fc) fc.textContent = text;
+  }
+  updateClocks();
+  setInterval(updateClocks, 1000);
+
+  // ─── KEYBOARD ENTER ──────────────────────
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !threshold.classList.contains('gone')) {
+      enterBtn.click();
+    }
+  });
+</script>
+
+</body>
+</html>
